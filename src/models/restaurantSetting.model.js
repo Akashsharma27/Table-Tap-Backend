@@ -1,43 +1,78 @@
-const {DataTypes}=require("sequelize");
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+const { commonModelFields } = require("../helpers/model.helper");
 
-const sequelize=require("../config/database");
+class RestaurantSetting extends Model {}
 
-const RestaurantSetting=sequelize.define("restaurant_settings",{
+RestaurantSetting.init(
+    {
+        id: {
+            type: DataTypes.BIGINT,
+            autoIncrement: true,
+            primaryKey: true
+        },
 
-    id:{
-        type:DataTypes.BIGINT,
-        autoIncrement:true,
-        primaryKey:true
+        ...commonModelFields,
+
+        restaurantId: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            field: "restaurant_id"
+        },
+
+        currency: {
+            type: DataTypes.STRING(10),
+            defaultValue: "INR"
+        },
+
+        currencySymbol: {
+            type: DataTypes.STRING(5),
+            defaultValue: "₹",
+            field: "currency_symbol"
+        },
+
+        taxPercentage: {
+            type: DataTypes.DECIMAL(5,2),
+            defaultValue: 0,
+            field: "tax_percentage"
+        },
+
+        serviceCharge: {
+            type: DataTypes.DECIMAL(5,2),
+            defaultValue: 0,
+            field: "service_charge"
+        },
+
+        themeColor: {
+            type: DataTypes.STRING(20),
+            defaultValue: "#ff5722",
+            field: "theme_color"
+        }
     },
+    {
+        sequelize,
 
-    restaurant_id:{
-        type:DataTypes.BIGINT,
-        allowNull:false
-    },
+        tableName: "restaurant_settings",
 
-    currency:{
-        type:DataTypes.STRING,
-        defaultValue:"INR"
-    },
+        modelName: "RestaurantSetting",
 
-    tax_percentage:{
-        type:DataTypes.FLOAT,
-        defaultValue:0
-    },
+        timestamps: true,
 
-    service_charge:{
-        type:DataTypes.FLOAT,
-        defaultValue:0
-    },
+        paranoid: true,
 
-    theme_color:{
-        type:DataTypes.STRING,
-        defaultValue:"#ff5722"
+        underscored: true,
+
+        indexes: [
+            {
+                unique: true,
+                fields: ["restaurant_id"]
+            },
+            {
+                unique: true,
+                fields: ["public_id"]
+            }
+        ]
     }
+);
 
-},{
-    timestamps:true,
-    underscored:true
-});
-
-module.exports=RestaurantSetting;
+module.exports = RestaurantSetting;

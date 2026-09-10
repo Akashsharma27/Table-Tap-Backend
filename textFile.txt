@@ -4,3 +4,6 @@ Here will be the backend code
 git add .
 git commit -m "Your commit message"
 git push
+
+========= migration =========
+npx sequelize-cli migration:generate --name file-name

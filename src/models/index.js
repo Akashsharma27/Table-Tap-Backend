@@ -4,33 +4,29 @@ const User = require("./user.model");
 const Restaurant = require("./restaurant.model");
 const RestaurantSetting = require("./restaurantSetting.model");
 
-/*
-|--------------------------------------------------------------------------
-| Associations
-|--------------------------------------------------------------------------
-*/
-
-User.hasOne(Restaurant,{
-    foreignKey:"user_id",
-    as:"restaurant"
+User.hasOne(Restaurant, {
+    foreignKey: "user_id",
+    as: "restaurant",
+    onDelete: "CASCADE"
 });
 
-Restaurant.belongsTo(User,{
-    foreignKey:"user_id",
-    as:"owner"
+Restaurant.belongsTo(User, {
+    foreignKey: "user_id",
+    as: "owner"
 });
 
-Restaurant.hasOne(RestaurantSetting,{
-    foreignKey:"restaurant_id",
-    as:"settings"
+Restaurant.hasOne(RestaurantSetting, {
+    foreignKey: "restaurant_id",
+    as: "settings",
+    onDelete: "CASCADE"
 });
 
-RestaurantSetting.belongsTo(Restaurant,{
-    foreignKey:"restaurant_id",
-    as:"restaurant"
+RestaurantSetting.belongsTo(Restaurant, {
+    foreignKey: "restaurant_id",
+    as: "restaurant"
 });
 
-module.exports={
+module.exports = {
     sequelize,
     User,
     Restaurant,

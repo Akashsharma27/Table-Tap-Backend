@@ -1,35 +1,40 @@
 const { Sequelize } = require("sequelize");
+const config = require("./index");
 
 const sequelize = new Sequelize(
-
-    process.env.DB_NAME,
-
-    process.env.DB_USER,
-
-    process.env.DB_PASSWORD,
-
+    config.database.database,
+    config.database.username,
+    config.database.password,
     {
-
-        host: process.env.DB_HOST,
-
-        port: process.env.DB_PORT,
-
+        host: config.database.host,
+        port: config.database.port,
         dialect: "mysql",
 
-        logging: false,
+        logging:
+            config.app.env === "development"
+                ? console.log
+                : false,
+
+        timezone: "+05:30",
+
+        dialectOptions: {
+            decimalNumbers: true
+        },
 
         define: {
-
             underscored: true,
+            freezeTableName: true,
+            paranoid: true,
+            timestamps: true
+        },
 
-            timestamps: true,
-
-            paranoid: true
-
+        pool: {
+            max: 10,
+            min: 2,
+            idle: 10000,
+            acquire: 30000
         }
-
     }
-
 );
 
 module.exports = sequelize;

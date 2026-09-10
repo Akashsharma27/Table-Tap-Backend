@@ -1,39 +1,24 @@
-const jwt=require("jsonwebtoken");
+const ApiError = require("../utils/ApiError");
+const httpStatus = require("../constants/httpStatus");
+const { verifyToken } = require("../utils/jwt");
 
-module.exports=(req,res,next)=>{
+module.exports = (req, res, next) => {
+    try {
+        const bearer = req.headers.authorization;
 
-    try{
-
-        const token=req.headers.authorization?.split(" ")[1];
-
-        if(!token){
-
-            return res.status(401).json({
-
-                success:false,
-
-                message:"Unauthorized"
-
-            });
-
+        if (!bearer || !bearer.startsWith("Bearer ")) {
+            throw new ApiError(
+                httpStatus.UNAUTHORIZED,
+                "Unauthorized"
+            );
         }
 
-        req.user=jwt.verify(token,process.env.JWT_SECRET);
+        const token = bearer.split(" ")[1];
+
+        req.user = verifyToken(token);
 
         next();
-
+    } catch (error) {
+        next(error);
     }
-
-    catch(err){
-
-        return res.status(401).json({
-
-            success:false,
-
-            message:"Invalid Token"
-
-        });
-
-    }
-
-}
+};

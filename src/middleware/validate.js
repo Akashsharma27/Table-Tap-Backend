@@ -1,30 +1,34 @@
-const { validationResult } = require("express-validator");
+const{
 
-module.exports = (req, res, next) => {
+validationResult
 
-    const errors = validationResult(req);
+}=require("express-validator");
 
-    if (errors.isEmpty()) {
+module.exports=(req,res,next)=>{
+
+    const errors=validationResult(req);
+
+    if(errors.isEmpty()){
 
         return next();
 
     }
 
-    const formatted = {};
+    const formatted={};
 
-    errors.array().forEach(error => {
+    errors.array().forEach(error=>{
 
-        formatted[error.path] = error.msg;
+        formatted[error.path]=error.msg;
 
     });
 
     return res.status(422).json({
 
-        success: false,
+        success:false,
 
-        message: "Validation Failed",
+        message:"Validation Failed",
 
-        errors: formatted
+        errors:formatted
 
     });
 

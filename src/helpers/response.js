@@ -1,27 +1,33 @@
-exports.success = (res, message = "Success", data = {}, status = 200) => {
+const ApiResponse = require("../utils/ApiResponse");
 
-    return res.status(status).json({
+exports.success = (
 
-        success: true,
+    res,
 
-        message,
+    message,
 
-        data
+    data,
 
-    });
+    status = 200
 
-};
+) => {
 
-exports.error = (res, message = "Something went wrong", status = 500) => {
+    return res
 
-    return res.status(status).json({
+        .status(status)
 
-        success: false,
+        .json(
 
-        message,
+            new ApiResponse(
 
-        data: null
+                status,
 
-    });
+                message,
 
-};
+                data
+
+            )
+
+        )
+
+}

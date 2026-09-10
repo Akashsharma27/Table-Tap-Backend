@@ -4,4 +4,4 @@ module.exports = {
 
     ADMIN: "admin"
 
-};
+};  

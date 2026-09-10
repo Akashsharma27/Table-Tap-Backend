@@ -1,60 +1,112 @@
-const {DataTypes}=require("sequelize");
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+const { commonModelFields } = require("../helpers/model.helper");
 
-const sequelize=require("../config/database");
+class Restaurant extends Model {}
 
-const Restaurant=sequelize.define("restaurants",{
+Restaurant.init(
+    {
+        id: {
+            type: DataTypes.BIGINT,
+            autoIncrement: true,
+            primaryKey: true
+        },
 
-    id:{
-        type:DataTypes.BIGINT,
-        autoIncrement:true,
-        primaryKey:true
+        ...commonModelFields,
+
+        userId: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            field: "user_id"
+        },
+
+        name: {
+            type: DataTypes.STRING(150),
+            allowNull: false,
+
+            validate: {
+                notEmpty: true,
+                len: [2, 150]
+            }
+        },
+
+        email: {
+            type: DataTypes.STRING(150),
+            allowNull: true,
+
+            validate: {
+                isEmail: true
+            },
+
+            set(value) {
+                if (value) {
+                    this.setDataValue(
+                        "email",
+                        value.trim().toLowerCase()
+                    );
+                }
+            }
+        },
+
+        phone: {
+            type: DataTypes.STRING(20)
+        },
+
+        address: {
+            type: DataTypes.TEXT
+        },
+
+        city: {
+            type: DataTypes.STRING(80)
+        },
+
+        state: {
+            type: DataTypes.STRING(80)
+        },
+
+        country: {
+            type: DataTypes.STRING(80),
+            defaultValue: "India"
+        },
+
+        logo: {
+            type: DataTypes.STRING
+        },
+
+        coverImage: {
+            type: DataTypes.STRING,
+            field: "cover_image"
+        },
+
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
+            field: "is_active"
+        }
     },
+    {
+        sequelize,
 
-    user_id:{
-        type:DataTypes.BIGINT,
-        allowNull:false
-    },
+        tableName: "restaurants",
 
-    restaurant_name:{
-        type:DataTypes.STRING,
-        allowNull:false
-    },
+        modelName: "Restaurant",
 
-    logo:{
-        type:DataTypes.STRING
-    },
+        timestamps: true,
 
-    cover_image:{
-        type:DataTypes.STRING
-    },
+        paranoid: true,
 
-    phone:{
-        type:DataTypes.STRING
-    },
+        underscored: true,
 
-    email:{
-        type:DataTypes.STRING
-    },
-
-    address:{
-        type:DataTypes.TEXT
-    },
-
-    city:{
-        type:DataTypes.STRING
-    },
-
-    state:{
-        type:DataTypes.STRING
-    },
-
-    country:{
-        type:DataTypes.STRING
+        indexes: [
+            {
+                fields: ["user_id"]
+            },
+            {
+                unique: true,
+                fields: ["public_id"]
+            }
+        ]
     }
+);
 
-},{
-    timestamps:true,
-    underscored:true
-});
-
-module.exports=Restaurant;
+module.exports = Restaurant;
